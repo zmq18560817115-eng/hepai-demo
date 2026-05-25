@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --shadow-neo: 4px 4px 0px 0px rgba(15, 23, 42, 1);
+  --shadow-neo-lg: 8px 8px 0px 0px rgba(15, 23, 42, 1);
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+@utility neo-card {
+  background-color: white;
+  border-width: 2px;
+  border-color: var(--color-slate-900);
+  box-shadow: var(--shadow-neo);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+@utility neo-button {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: white;
+  border-width: 2px;
+  border-color: var(--color-slate-900);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  box-shadow: var(--shadow-neo);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+
+  &:hover {
+    transform: translate(-0.125rem, -0.125rem);
+    box-shadow: var(--shadow-neo-lg);
+  }
+
+  &:active {
+    transform: translate(0.125rem, 0.125rem);
+    box-shadow: none;
+  }
+}
+
+@utility neo-button-primary {
+  @apply neo-button bg-slate-900 text-white;
+  
+  &:hover {
+    background-color: var(--color-indigo-600);
+  }
+}

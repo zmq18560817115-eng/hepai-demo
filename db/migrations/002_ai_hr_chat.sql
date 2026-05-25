@@ -1,0 +1,21 @@
+-- AI HR 对话模块（在 001 之后执行，MySQL）
+
+CREATE TABLE IF NOT EXISTS `ai_hr_sessions` (
+  `id` VARCHAR(36) NOT NULL,
+  `user_id` VARCHAR(36) NOT NULL,
+  `title` VARCHAR(200) NOT NULL DEFAULT '企业 AI HR 对话',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ai_hr_messages` (
+  `id` VARCHAR(36) NOT NULL,
+  `session_id` VARCHAR(36) NOT NULL,
+  `role` ENUM('user', 'assistant', 'system') NOT NULL,
+  `content` TEXT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`session_id`) REFERENCES `ai_hr_sessions`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+coverage/
+.vite/
+
+# Env & secrets
+.env
+.env.local
+!.env.example
+
+# SQLite runtime data
+hepai-server/data/
+
+# OS / logs
+.DS_Store
+*.log
