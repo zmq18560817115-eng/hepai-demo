@@ -29,6 +29,15 @@ const PERSONA_TEMPLATES: Record<
   },
 };
 
+export function getPersonaTemplateForLetter(letter: string): {
+  name: string;
+  tags: string[];
+  motto: string;
+} {
+  const key = letter in PERSONA_TEMPLATES ? letter : 'I';
+  return PERSONA_TEMPLATES[key] ?? PERSONA_TEMPLATES.I;
+}
+
 export function generatePersonaFromAnswers(answers: string[]) {
   const counts: Record<string, number> = {};
   for (const a of answers) counts[a] = (counts[a] ?? 0) + 1;

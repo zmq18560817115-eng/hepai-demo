@@ -1,0 +1,23 @@
+# 和拍一键启动：在 text/ 目录执行 docker compose up --build
+# 或在前端项目执行: npm run docker
+
+services:
+  hepai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8080
+      FRONTEND_DIST: /app/dist
+      SQLITE_PATH: /app/data/hepai.sqlite
+      # 正式环境请改成随机长字符串
+      JWT_SECRET: hepai-docker-demo-secret
+    volumes:
+      - hepai-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  hepai-data:

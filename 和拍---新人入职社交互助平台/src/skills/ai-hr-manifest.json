@@ -1,0 +1,51 @@
+{
+  "name": "ai-hr-onboarding",
+  "display_name": "新人 AI HR 交流基础（ai-native-onboarding × 和拍）",
+  "version": "1.1.0",
+  "source_desktop": "~/Desktop/SKILL.md",
+  "philosophy": [
+    "Learn by Doing",
+    "Taste in the Loop",
+    "Work Smart not Hard",
+    "目标是穿越沼泽，不是对付每一条鳄鱼"
+  ],
+  "welcome": {
+    "newcomer": "你好，我是企业 AI HR 助手，已整合 **企业管理准则** 与 **ai-hr-onboarding** 带教 Skill。\n\n制度流程（请假、报销、入职、绩效等）将引用集团准则条款；融入类问题结合和拍面具、午餐、导师能力。\n\n建议先完成「入职盲盒」8 题；也可直接问：年假怎么请、报销流程、试用期考核、面具是什么。",
+    "mentor": "你好，我是 AI HR 助手（导师版），已加载 **ai-hr-onboarding** 带教协作规范。可协助理解新人面具、识别情绪风险、设计低压力话术。",
+    "hr": "你好，我是 AI HR 运营助手，已加载融入分析与干预策略 Skill。可解读看板、告警与批次融入指数。"
+  },
+  "suggestions": {
+    "newcomer": [
+      "年假怎么申请？需要提前多久？",
+      "差旅报销标准是什么？",
+      "入职第一天要办哪些手续？",
+      "人格面具是什么？和 8 题测试有什么关系？",
+      "入职第一周很焦虑怎么办？",
+      "如何用蹭饭地图找饭搭子？"
+    ],
+    "mentor": [
+      "如何根据面具标签理解新人？",
+      "新人能量连续偏低该怎么沟通？",
+      "带教时有哪些减压话术？",
+      "五步法如何用在带教场景？"
+    ],
+    "hr": [
+      "如何解读本批次融入指数？",
+      "待关注新人名单如何优先干预？",
+      "午餐匹配成功率偏低怎么优化？",
+      "风险告警推送 HRBP 的最佳实践？"
+    ]
+  },
+  "first_week_roadmap": [
+    { "phase": "第 1 天", "tasks": ["完成 8 题人格测试", "浏览安全屋与面具说明"] },
+    { "phase": "第 2～3 天", "tasks": ["记录一条闪光时刻", "查看导师状态，可选简短问候"] },
+    { "phase": "第 1 周", "tasks": ["尝试 1 次午餐匹配", "按能量调整社交强度"] }
+  ],
+  "reference_files": [
+    "SKILL.md",
+    "references/hepai-newcomer-playbook.md",
+    "references/problem_solving_framework.md",
+    "references/essential-skills-guide.md",
+    "references/global-agent-instructions.md"
+  ]
+}

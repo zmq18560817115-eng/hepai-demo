@@ -1,0 +1,6 @@
+**/node_modules
+**/.git
+hepai-server/data
+和拍---新人入职社交互助平台/dist
+和拍---新人入职社交互助平台/.vite
+**/.env.local

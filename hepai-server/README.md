@@ -20,6 +20,14 @@ npm run dev
 | `dev_mentor` | 导师 |
 | `dev_hr` | HR |
 
+导师 / HR **工号密码登录**（`POST /api/v1/auth/login`）：
+
+| 端 | 工号 | 密码 |
+|----|------|------|
+| 导师 | `M00001` | `dev` |
+| 导师 | `M00002` | `dev` |
+| HR | `HR0001` | `dev` |
+
 ## 可选：MySQL
 
 ```bash

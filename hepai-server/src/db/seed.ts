@@ -1,6 +1,12 @@
 import type Database from 'better-sqlite3';
 import { v4 as uuid } from 'uuid';
+import {
+  assignMentorsToNewcomer,
+  seedMentorPool,
+} from '../services/mentorAssignment.js';
 import { PERSONALITY_QUIZ } from './quizQuestions.js';
+import { DEFAULT_USER_PASSWORD } from '../utils/defaultPassword.js';
+import { buildPersonaAvatarUrl } from '../utils/personaAvatars.js';
 
 const AVATAR =
   'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4';
@@ -18,15 +24,23 @@ export function seedDatabase(db: Database.Database) {
 
   const insUser = db.prepare(`
     INSERT INTO users (id, username, dingtalk_user_id, password, nickname, avatar_url, role, mentor_status, onboarding_date, onboarding_completed)
-    VALUES (?, ?, ?, 'dev', ?, ?, ?, ?, date('now', '-8 days'), ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, date('now', '-8 days'), ?)
   `);
+
+  const newcomerAvatar = buildPersonaAvatarUrl(
+    72,
+    'I',
+    null,
+    DEV_USERS.dev_newcomer,
+  );
 
   insUser.run(
     DEV_USERS.dev_newcomer,
     'E00001',
     'dev_newcomer',
+    DEFAULT_USER_PASSWORD,
     '程序员小智',
-    AVATAR,
+    newcomerAvatar,
     'newcomer',
     'available',
     0,
@@ -35,35 +49,21 @@ export function seedDatabase(db: Database.Database) {
     DEV_USERS.partner,
     'E00002',
     'dev_partner',
+    DEFAULT_USER_PASSWORD,
     '产品小美',
-    AVATAR,
+    buildPersonaAvatarUrl(58, 'E', '社交 E 人带玩型', DEV_USERS.partner),
     'newcomer',
     'available',
     1,
   );
-  insUser.run(
-    DEV_USERS.dev_mentor,
-    'M00001',
-    'dev_mentor',
-    '雷军老师',
-    'https://api.dicebear.com/7.x/identicon/svg?seed=lei',
-    'mentor',
-    'busy',
-    1,
-  );
-  db.prepare(`
-    INSERT INTO users (id, username, dingtalk_user_id, password, nickname, avatar_url, role, mentor_status, onboarding_date, onboarding_completed)
-    VALUES (?, 'M00002', 'dev_mentor2', 'dev', '张经理', ?, 'mentor', 'available', date('now'), 1)
-  `).run(uuid(), 'https://api.dicebear.com/7.x/identicon/svg?seed=zhang');
 
-  const mentor2 = db
-    .prepare(`SELECT id FROM users WHERE username = 'M00002'`)
-    .get() as { id: string };
+  seedMentorPool(db);
 
   insUser.run(
     DEV_USERS.dev_hr,
     'HR0001',
     'dev_hr',
+    DEFAULT_USER_PASSWORD,
     'HR管理员',
     AVATAR,
     'hr',
@@ -78,6 +78,7 @@ export function seedDatabase(db: Database.Database) {
     insQ.run(q.id, q.text, JSON.stringify(q.options), q.sort);
   }
 
+  /* E00001 不预置 persona，待首次 8 题测试后生成人格标签 */
   db.prepare(
     `INSERT INTO personas (id, user_id, name, tags, motto) VALUES (?, ?, ?, ?, ?)`,
   ).run(
@@ -92,34 +93,8 @@ export function seedDatabase(db: Database.Database) {
     `INSERT INTO user_energy_snapshot (user_id, energy_level) VALUES (?, ?)`,
   ).run(DEV_USERS.partner, 42);
 
-  db.prepare(
-    `INSERT INTO mentor_assignments (mentee_id, mentor_id, type) VALUES (?, ?, 'main')`,
-  ).run(DEV_USERS.dev_newcomer, DEV_USERS.dev_mentor);
-  db.prepare(
-    `INSERT INTO mentor_assignments (mentee_id, mentor_id, type) VALUES (?, ?, 'project')`,
-  ).run(DEV_USERS.dev_newcomer, mentor2.id);
-  db.prepare(
-    `INSERT INTO mentor_assignments (mentee_id, mentor_id, type) VALUES (?, ?, 'main')`,
-  ).run(DEV_USERS.partner, DEV_USERS.dev_mentor);
+  assignMentorsToNewcomer(db, DEV_USERS.dev_newcomer);
+  assignMentorsToNewcomer(db, DEV_USERS.partner);
 
-  db.prepare(
-    `INSERT INTO hr_alerts (id, user_id, user_alias, dept, reason, severity) VALUES (?, ?, ?, ?, ?, ?)`,
-  ).run(
-    uuid(),
-    DEV_USERS.partner,
-    '蓝色小象',
-    '研发中心 / 测试组',
-    '连续3天情绪分极低',
-    'red',
-  );
-  db.prepare(
-    `INSERT INTO hr_alerts (id, user_id, user_alias, dept, reason, severity) VALUES (?, ?, ?, ?, ?, ?)`,
-  ).run(
-    uuid(),
-    DEV_USERS.dev_newcomer,
-    '飞翔橘子',
-    '市场部 / 品牌组',
-    '入职盲盒显示偏I人，导师3天未互动',
-    'yellow',
-  );
+  /* HR 告警、五大部门新人、午餐/AI 演示数据由 applyFullSeed 在 seed 之后写入 */
 }

@@ -44,24 +44,28 @@ Authorization: Bearer <access_token>
 }
 ```
 
-| HTTP 状态 | 含义 |
-|-----------|------|
-| 200 | 成功（GET/PATCH/DELETE） |
-| 201 | 创建成功（POST） |
-| 400 | 参数错误 |
-| 401 | 未登录 / Token 失效 |
-| 403 | 无权限（如新人访问 HR 接口） |
-| 404 | 资源不存在 |
-| 409 | 业务冲突（重复提交盲盒等） |
-| 500 | 服务器错误 |
+
+| HTTP 状态 | 含义                   |
+| ------- | -------------------- |
+| 200     | 成功（GET/PATCH/DELETE） |
+| 201     | 创建成功（POST）           |
+| 400     | 参数错误                 |
+| 401     | 未登录 / Token 失效       |
+| 403     | 无权限（如新人访问 HR 接口）     |
+| 404     | 资源不存在                |
+| 409     | 业务冲突（重复提交盲盒等）        |
+| 500     | 服务器错误                |
+
 
 ### 0.4 角色与权限
 
-| `role` | 可访问接口前缀 |
-|--------|----------------|
+
+| `role`     | 可访问接口前缀                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
 | `newcomer` | `/users/me`, `/onboarding/*`, `/quiz/*`, `/personas/me`, `/workplace`, `/mood/*`, `/mentors`, `/lunch/*` |
-| `mentor` | 上述中与自己相关的 + `/mentor/*` |
-| `hr` | `/hr/*` + 只读部分统计（按需） |
+| `mentor`   | 上述中与自己相关的 + `/mentor/*`                                                                                  |
+| `hr`       | `/hr/*` + 只读部分统计（按需）                                                                                     |
+
 
 ---
 
@@ -382,7 +386,7 @@ Authorization: Bearer <access_token>
 
 **驱动 UI**：`WorkplaceView` 摘要、`MentorsView` 完整列表。
 
-**`status` 枚举**：`busy` | `available` | `syncing`（导师在钉钉设忙闲或 HR 配置）
+`**status` 枚举**：`busy` | `available` | `syncing`（导师在钉钉设忙闲或 HR 配置）
 
 ---
 
@@ -541,13 +545,15 @@ Authorization: Bearer <access_token>
 
 **驱动 UI**：`MentorHubView` 列表、能量条、关注标签。
 
-**`risk` 规则建议**
+`**risk` 规则建议**
 
-| 条件 | `risk` |
-|------|--------|
-| `energy_level` < 50 连续 3 天 | `watch` |
-| `energy_level` < 30 或 7 天无 mood | `alert` |
-| 其他 | `normal` |
+
+| 条件                              | `risk`   |
+| ------------------------------- | -------- |
+| `energy_level` < 50 连续 3 天      | `watch`  |
+| `energy_level` < 30 或 7 天无 mood | `alert`  |
+| 其他                              | `normal` |
+
 
 ---
 
@@ -731,28 +737,69 @@ Authorization: Bearer <access_token>
 
 ## 9. 接口总览（23 个）
 
-| 优先级 | 方法 | 路径 |
-|--------|------|------|
-| P0 | POST | `/auth/dingtalk` |
-| P0 | GET | `/users/me` |
-| P0 | GET | `/onboarding/status` |
-| P0 | GET | `/quiz/onboarding` |
-| P0 | POST | `/quiz/submit` |
-| P0 | GET | `/personas/me` |
-| P0 | GET | `/workplace` |
-| P0 | POST | `/mood` |
-| P0 | PATCH | `/mood/energy` |
-| P0 | GET | `/mentors` |
-| P0 | POST | `/lunch/match` |
-| P0 | GET | `/lunch/status` |
-| P0 | DELETE | `/lunch/match` |
-| P1 | GET | `/lunch/venues` |
-| P1 | GET | `/mentor/assignees` |
-| P1 | GET | `/hr/dashboard/stats` |
-| P1 | GET | `/hr/mood/trends` |
-| P1 | GET | `/hr/newcomers` |
-| P2 | GET | `/hr/alerts` |
-| P2 | POST | `/hr/interventions` |
-| P2 | GET | `/hr/newcomers/search` |
-| P2 | GET | `/mood/logs` |
-| P2 | GET | `/notifications` |
+
+| 优先级 | 方法     | 路径                     |
+| --- | ------ | ---------------------- |
+| P0  | POST   | `/auth/dingtalk`       |
+| P0  | GET    | `/users/me`            |
+| P0  | GET    | `/onboarding/status`   |
+| P0  | GET    | `/quiz/onboarding`     |
+| P0  | POST   | `/quiz/submit`         |
+| P0  | GET    | `/personas/me`         |
+| P0  | GET    | `/workplace`           |
+| P0  | POST   | `/mood`                |
+| P0  | PATCH  | `/mood/energy`         |
+| P0  | GET    | `/mentors`             |
+| P0  | POST   | `/lunch/match`         |
+| P0  | GET    | `/lunch/status`        |
+| P0  | DELETE | `/lunch/match`         |
+| P1  | GET    | `/lunch/venues`        |
+| P1  | GET    | `/mentor/assignees`    |
+| P1  | GET    | `/hr/dashboard/stats`  |
+| P1  | GET    | `/hr/mood/trends`      |
+| P1  | GET    | `/hr/newcomers`        |
+| P2  | GET    | `/hr/alerts`           |
+| P2  | POST   | `/hr/interventions`    |
+| P2  | GET    | `/hr/newcomers/search` |
+| P2  | GET    | `/mood/logs`           |
+| P2  | GET    | `/notifications`       |
+
+
+---
+
+## AI HR（企业管理准则 × 和拍 Skill）
+
+
+| 页面  | 方法     | 路径                  | 说明                                                             |
+| --- | ------ | ------------------- | -------------------------------------------------------------- |
+| P6  | GET    | `/ai/hr/skill`      | Skill 元数据 + `enterprise_guidelines` + `integrated_skills`      |
+| P6  | GET    | `/ai/hr/guidelines` | 准则目录；`?q=` 关键词检索                                               |
+| P6  | GET    | `/ai/hr/history`    | 对话历史                                                           |
+| P6  | POST   | `/ai/hr/chat`       | 发送消息；响应含 `citations[]`, `policy_version`, `integrated_sources` |
+| P6  | DELETE | `/ai/hr/history`    | 清空对话                                                           |
+| —   | GET    | `/system/status`    | 含 `skill.enterprise_guidelines` 加载状态                           |
+
+
+### POST `/ai/hr/chat` 响应示例
+
+```json
+{
+  "reply": "【企业管理准则 · 考勤与休假】…",
+  "role": "newcomer",
+  "reply_source": "enterprise-guidelines",
+  "topic": "policy_attendance",
+  "citations": [
+    {
+      "id": "attendance__请假类型与审批",
+      "title": "考勤与休假",
+      "section": "请假类型与审批",
+      "excerpt": "年假/事假提前 1 个工作日…",
+      "source": "policies/02-attendance-leave.md",
+      "policy_version": "2025.05"
+    }
+  ],
+  "policy_version": "2025.05",
+  "integrated_sources": ["ai-hr-onboarding", "enterprise-management-guidelines"]
+}
+```
+

@@ -8,7 +8,11 @@
     "start": "tsx src/index.ts",
     "db:setup": "tsx src/db/setup.ts",
     "db:reset": "rm -f data/hepai.sqlite && npm run db:setup",
-    "db:enrich": "tsx src/db/enrich.ts"
+    "db:enrich": "tsx src/db/enrich.ts",
+    "db:sync-avatars": "tsx src/db/syncPersonaAvatars.ts",
+    "db:sync-eight-newcomers": "tsx src/db/syncEightNewcomers.ts",
+    "db:sync": "tsx src/db/syncData.ts",
+    "db:reset-newcomer": "tsx src/db/resetNewcomer.ts"
   },
   "dependencies": {
     "@google/genai": "^1.52.0",

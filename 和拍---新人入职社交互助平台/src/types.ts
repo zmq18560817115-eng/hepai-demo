@@ -8,8 +8,12 @@ export type UserType = 'newcomer' | 'mentor' | 'hr';
 export type AppView =
   | 'blindbox'
   | 'workplace'
+  | 'my_desk'
+  | 'flash_star'
   | 'lunch'
+  | 'interest'
   | 'mentors'
+  | 'mentor_chat'
   | 'mentor_hub'
   | 'hr'
   | 'ai_hr';

@@ -5,10 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=127.0.0.1",
+    "dev:stack": "bash scripts/start-fullstack.sh",
+    "demo": "bash scripts/start-local-demo.sh",
+    "pilot:dingtalk": "bash scripts/pilot-dingtalk.sh",
+    "docker": "bash scripts/docker-up.sh",
+    "dev:mock": "VITE_USE_MOCK_API=true vite --port=3000 --host=127.0.0.1",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "personas:fetch": "node scripts/fetch-persona-heads.mjs && node scripts/fetch-persona-composites.mjs",
+    "personas:fetch-composites": "node scripts/fetch-persona-composites.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
