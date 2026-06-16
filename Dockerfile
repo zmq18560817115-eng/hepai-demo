@@ -6,7 +6,13 @@ WORKDIR /frontend
 COPY ["和拍---新人入职社交互助平台/package.json", "和拍---新人入职社交互助平台/package-lock.json", "./"]
 RUN npm ci
 COPY ["和拍---新人入职社交互助平台/", "./"]
-RUN cp .env.pilot .env.local && npm run build
+# 云端构建不依赖 gitignore 的 .env.pilot，直接写入生产环境变量
+RUN printf '%s\n' \
+  'VITE_USE_MOCK_API=false' \
+  'VITE_API_BASE_URL=/api/v1' \
+  'VITE_DINGTALK_EMBED=true' \
+  > .env.local \
+  && npm run build
 
 FROM node:20-bookworm AS app
 WORKDIR /app
