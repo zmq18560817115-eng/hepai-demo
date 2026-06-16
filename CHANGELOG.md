@@ -162,6 +162,12 @@ git commit -m "简短说明：例如 增强 AI HR 或 修复午餐匹配"
 
 ## 版本记录
 
+### [2026-05-25] 接入桌面 ai-hr-onboarding Skill
+
+- 从 `~/Desktop/SKILL.md` 与 `ai-native-onboarding/references` 迁入 `text/skills/ai-hr-onboarding/`
+- 后端 `skillLoader.ts` 注入 AI HR system prompt；新增 `GET /api/v1/ai/hr/skill`
+- 前端 AI HR 页加载 Skill 欢迎语、快捷问题、首周路线侧栏
+
 ### [2026-05-25] 和拍：前端+后端+文档完整版
 
 - 初始化 Git 仓库（`text/` 根目录）

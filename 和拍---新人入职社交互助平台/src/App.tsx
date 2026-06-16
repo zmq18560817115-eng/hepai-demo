@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import BlindBoxView from './components/BlindBoxView';
@@ -20,7 +20,7 @@ import HrOnboardingRegisterView from './components/HrOnboardingRegisterView';
 import MentorsView from './components/MentorsView';
 import MentorHubView from './components/MentorHubView';
 import AIHRChatView from './components/AIHRChatView';
-import RoleGateView from './components/RoleGateView';
+import EntryRoleSelectView from './components/EntryRoleSelectView';
 import PortalLoginView from './components/PortalLoginView';
 import WelcomeGiftModal from './components/dingtalk/WelcomeGiftModal';
 import WelcomeTeamPanel from './components/dingtalk/WelcomeTeamPanel';
@@ -42,6 +42,7 @@ import {
 } from './context/PrototypeContext';
 import { useAuthSessionScope } from './hooks/useAuthSessionScope';
 import { AppView, UserType } from './types';
+import { consumeShowcaseJump } from './utils/showcaseJump';
 
 type NewcomerNavItem = {
   id: AppView;
@@ -64,11 +65,43 @@ function AppShell() {
   const [newcomerAuthed, setNewcomerAuthed] = useState(false);
   const [onboardingPhase, setOnboardingPhase] =
     useState<NewcomerOnboardingPhase>('login');
+  const showcaseBootRef = useRef(false);
 
   const resetNewcomerOnboarding = () => {
     setNewcomerAuthed(false);
     setOnboardingPhase('login');
   };
+
+  useEffect(() => {
+    if (showcaseBootRef.current) return;
+    const jump = consumeShowcaseJump();
+    if (!jump) return;
+    showcaseBootRef.current = true;
+
+    (async () => {
+      hepaiApi.logout();
+      resetNewcomerOnboarding();
+      setEntryRole(jump.role);
+
+      if (!jump.employeeId) return;
+
+      if (jump.role === 'newcomer') {
+        const res = await hepaiApi.loginPortal(
+          jump.employeeId,
+          '123456',
+          'newcomer',
+        );
+        setNewcomerAuthed(true);
+        setOnboardingPhase(
+          jump.firstTimeFlow && res.show_welcome_gift ? 'gift' : 'portal',
+        );
+      } else {
+        await hepaiApi.loginPortal(jump.employeeId, '123456', jump.role);
+      }
+    })().catch(() => {
+      showcaseBootRef.current = false;
+    });
+  }, []);
 
   const handleEntrySelect = (role: UserType) => {
     hepaiApi.logout();
@@ -83,7 +116,12 @@ function AppShell() {
   };
 
   if (!entryRole) {
-    return <RoleGateView onSelect={handleEntrySelect} />;
+    return (
+      <EntryRoleSelectView
+        embedded={embedded}
+        onSelect={handleEntrySelect}
+      />
+    );
   }
 
   if (entryRole === 'mentor') {
@@ -157,9 +195,11 @@ function NewcomerPortal({ onExit }: { onExit: () => void }) {
     returnView: AppView;
   } | null>(null);
   const { sessionEpoch } = useAuthSessionScope();
+  const hasChosenInitialView = useRef(false);
 
   useEffect(() => {
     setMentorChat(null);
+    hasChosenInitialView.current = false;
   }, [sessionEpoch]);
 
   const openMentorChat = (mentor: MentorDto, returnView: AppView = 'workplace') => {
@@ -181,12 +221,28 @@ function NewcomerPortal({ onExit }: { onExit: () => void }) {
   }, [refreshFromServer]);
 
   useEffect(() => {
+    if (!sessionReady || booting || !onboardingDone) return;
+    try {
+      const raw = sessionStorage.getItem('hepai_showcase_view');
+      if (!raw) return;
+      sessionStorage.removeItem('hepai_showcase_view');
+      setView(raw as AppView);
+    } catch {
+      /* ignore */
+    }
+  }, [sessionReady, booting, onboardingDone]);
+
+  useEffect(() => {
     if (!sessionReady || booting) return;
     if (!onboardingDone) {
       setView('blindbox');
+      hasChosenInitialView.current = true;
       return;
     }
-    setView(defaultViewForRole('newcomer', true));
+    if (!hasChosenInitialView.current) {
+      setView(defaultViewForRole('newcomer', true));
+      hasChosenInitialView.current = true;
+    }
   }, [onboardingDone, sessionReady, booting]);
 
   const handleRetakeBlindbox = async () => {

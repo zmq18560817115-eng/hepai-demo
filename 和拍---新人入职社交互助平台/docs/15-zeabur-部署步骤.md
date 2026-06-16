@@ -1,215 +1,159 @@
-# 和拍 · Zeabur 免费部署（傻瓜步骤）
-
-> 目标：得到固定网址，例如 `https://hepai-xxxx.zeabur.app`，钉钉只配置一次。  
-> 费用：**Free 档 0 元**，注册一般**不需要信用卡**。
+# 和拍 · Zeabur 部署说明（含大陆限制）
 
 ---
 
-## 你要准备
+## ⚠️ 中国大陆用户：为什么可能「用不了」
 
-| 项 | 说明 |
-|----|------|
-| GitHub 账号 | 免费注册 https://github.com |
-| 本机项目 | `Downloads/text/` 文件夹（含 `Dockerfile`） |
-| 约 30～60 分钟 | 首次推代码 + 部署 |
+Zeabur 会提示 **「中国大陆网络环境限制」**，常见原因：
+
+| 限制 | 含义 |
+|------|------|
+| **区域选错** | 若选 **中国大陆** 机房，服务器 **访问不了 GitHub、Docker Hub**，构建会失败 |
+| **域名备案** | 用 Zeabur 子域名或自己的域名给大陆用户长期访问，常需 **实名认证** 或 **已备案域名** |
+| **网络环境** | 本机访问 GitHub / Zeabur 控制台也可能慢或失败 |
+
+**结论：** 在大陆做演示，**更推荐下面「替代方案」**，不必死磕 Zeabur。
 
 ---
 
-# 第一步：把代码推到 GitHub
+## 大陆用户推荐（按简单程度）
 
-## 1.1 在 GitHub 新建仓库
+### 方案 A：本机 Docker + cpolar（最省事）
 
-1. 登录 https://github.com/
-2. 右上角 **+** → **New repository**
-3. 仓库名填：`hepai-demo`（英文即可）
-4. 选 **Private** 或 Public 都行
-5. **不要**勾选 “Add a README”
-6. 点 **Create repository**
-7. 记下仓库地址，例如：  
-   `https://github.com/你的用户名/hepai-demo.git`
+```bash
+# 终端 1
+cd ~/Downloads/text/和拍---新人入职社交互助平台
+npm run docker
 
-## 1.2 在本机 Mac 上传代码
+# 终端 2（先注册 https://www.cpolar.com/ 拿 token）
+cpolar http 8080
+```
 
-打开 **终端**，整段复制执行（把 `你的用户名` 改成你的）：
+用 cpolar 给的 **https 地址** 发给别人或填钉钉（若控制台支持保留子域名可固定）。
+
+---
+
+### 方案 B：本机试点 + localtunnel（零注册云）
+
+```bash
+# 终端 1
+npm run pilot:dingtalk
+
+# 终端 2（关 VPN）
+npx localtunnel --port 8080 --local-host 127.0.0.1
+```
+
+链接会变，适合 **临时演示**；钉钉聊天发链接即可，不必工作台固定入口。
+
+---
+
+### 方案 C：Oracle 免费云 + DuckDNS（固定网址、电脑可关）
+
+见 [13-oracle-傻瓜部署.md](./13-oracle-傻瓜部署.md)。
+
+---
+
+# 若仍要用 Zeabur（必读设置）
+
+## 关键设置（避免大陆限制）
+
+1. **区域必须选：Hong Kong / Tokyo / Singapore**  
+   **不要选** 「中国大陆」「China」「Beijing」等。
+
+2. **完成 Zeabur 账号实名**（若要用平台子域名）。
+
+3. 代码仍需在 **GitHub**；本机 push 前确保能打开 github.com。
+
+---
+
+## 第一步：代码推到 GitHub
+
+### 1.1 新建仓库
+
+1. https://github.com/ → 登录  
+2. 右上角 **+** → **New repository**  
+3. 名称：`hepai-demo` → **Create**（不要勾选 README）
+
+### 1.2 Mac 上传
 
 ```bash
 cd ~/Downloads/text
-
-# 若还没有 git 仓库
 git init
-git add Dockerfile docker-compose.yml .dockerignore render.yaml
-git add hepai-server
-git add "和拍---新人入职社交互助平台"
-
-git commit -m "和拍 Zeabur 部署"
-
+git add Dockerfile docker-compose.yml .dockerignore render.yaml hepai-server "和拍---新人入职社交互助平台"
+git commit -m "和拍部署"
 git branch -M main
 git remote add origin https://github.com/你的用户名/hepai-demo.git
 git push -u origin main
 ```
 
-> 若提示要登录 GitHub：按提示用浏览器登录，或配置 Personal Access Token。
+---
+
+## 第二步：Zeabur 控制台（界面可能略有不同）
+
+登录：https://zeabur.com/ （建议用 GitHub 登录）
+
+### 找入口（对照你屏幕上文字）
+
+| 你想做的 | 在页面上找这些字 |
+|----------|------------------|
+| 新建项目 | **Create Project** / **新建项目** / 首页 **+** |
+| 添加服务 | **Add Service** / **Deploy** / **部署服务** / **Git** 图标 |
+| 选仓库 | **GitHub** → 授权 → 选 `hepai-demo` |
+| 构建方式 | **Dockerfile**（仓库根目录已有） |
+| 区域 | **Region** → 选 **Hong Kong**（香港） |
+| 端口 | **Networking** / **网络** → **8080** |
+| 域名 | **Domains** / **域名** → **Generate Domain** |
+
+### 若看不到「Deploy New Service」
+
+1. 先点进某个 **Project（项目）** 卡片  
+2. 项目 **里面** 才有 **Add Service** 或 **+**  
+3. 或首页直接 **Import from GitHub** / **从 GitHub 导入**
+
+### 部署后
+
+- 打开 **Logs**，等构建成功（约 5～15 分钟）  
+- **Domains** 里生成 `https://xxx.zeabur.app`  
+- 浏览器访问，账号 **E00001 / 123456**
 
 ---
 
-# 第二步：Zeabur 部署
+## 第三步：钉钉（域名能打开时）
 
-## 2.1 注册 Zeabur
+| 项 | 填写 |
+|----|------|
+| H5 首页 | `https://你的域名.zeabur.app/` |
+| 可信域名 | `你的域名.zeabur.app` |
 
-1. 打开 https://zeabur.com/
-2. 点 **Sign in** → 用 **GitHub** 登录（推荐）
-3. 授权 Zeabur 访问你的仓库
-
-## 2.2 创建项目并导入仓库
-
-1. 控制台点 **New Project**（新建项目）
-2. 选区域（可选 **Hong Kong** 或离你近的）
-3. 点 **Deploy New Service** → **Git**
-4. 选择仓库 **`hepai-demo`**
-5. 分支选 **`main`**
-
-## 2.3 使用 Dockerfile 构建
-
-Zeabur 应自动识别根目录的 `Dockerfile`。
-
-若没有自动识别：
-
-1. 进入该 **Service** → **Settings**
-2. **Build** 方式选 **Dockerfile**
-3. **Dockerfile Path** 填：`Dockerfile`
-4. **Root Directory** 留空（仓库根就是 `text` 内容）
-
-## 2.4 设置端口（重要）
-
-1. 进入 Service → **Networking** 或 **端口 / Port**
-2. 暴露端口填：**8080**
-3. 协议：**HTTP**
-
-保存后触发重新部署（Redeploy）。
-
-## 2.5 等待构建完成
-
-1. 打开 **Logs** 标签
-2. 看到类似 `和拍 API`、`试点入口` 或构建成功
-3. 状态变为 **Running**
-
-首次构建约 **5～15 分钟**（要编译前端 + 后端）。
+若 Zeabur 域名在大陆打不开，改用 **方案 A/B** 的链接，或 **Oracle 固定域名**。
 
 ---
 
-# 第三步：绑定固定域名
+## 常见问题
 
-1. 在该 Service 页面找到 **Domains** / **域名**
-2. 点 **Generate Domain** 或 **绑定 Zeabur 子域名**
-3. 得到地址，例如：  
-   `https://hepai-demo-abc123.zeabur.app`
+**构建失败、拉不下 Docker 镜像**  
+→ 区域改 **香港**，不要用中国大陆。
 
-## 自测
+**没有域名 / 绑定失败**  
+→ 完成 Zeabur 实名，或换 **cpolar / Oracle**。
 
-浏览器打开：
+**控制台全是英文找不到按钮**  
+→ 在项目 **内部** 找 **+** 或 **Add Service**，不要只在首页找。
 
-```
-https://你的域名.zeabur.app/
-```
-
-应看到 **我是新人 / 导师 / HR**。
-
-健康检查：
-
-```
-https://你的域名.zeabur.app/api/v1/health
-```
-
-应返回 `"status":"up"`。
-
-登录：**E00001** 密码 **123456**。
-
-> **免费档**：很久没人访问会休眠，第一次打开可能慢 10～30 秒，属正常。
+**完全不想折腾**  
+→ `npm run docker` + `cpolar http 8080`（方案 A）。
 
 ---
 
-# 第四步：钉钉开放平台（只配一次）
-
-1. 打开 https://open.dingtalk.com/
-2. 你的企业内部应用 → **网页应用 / H5**
-
-| 配置项 | 填写 |
-|--------|------|
-| 应用首页 | `https://你的域名.zeabur.app/` |
-| 可信域名 | `你的域名.zeabur.app`（不要 https、不要 `/`） |
-
-3. 保存 → 发布 **测试版**
-4. 工作台添加应用，或在钉钉聊天里发链接测试
-
-### 演示账号
-
-| 工号 | 密码 | 说明 |
-|------|------|------|
-| E00001 | 123456 | 首次完整流程 |
-| E00008 | 123456 | 已完成新人 |
-| M00001 | 123456 | 导师 |
-| HR0001 | 123456 | HR |
-
----
-
-# 第五步：以后更新代码
-
-本机改完代码后：
-
-```bash
-cd ~/Downloads/text
-git add -A
-git commit -m "更新说明"
-git push
-```
-
-Zeabur 会自动重新构建（或在控制台点 **Redeploy**）。
-
----
-
-# 常见问题
-
-**Q：构建失败？**  
-- 看 Zeabur **Logs** 里红色报错  
-- 确认仓库根目录有 `Dockerfile`、`hepai-server`、`和拍---新人入职社交互助平台`
-
-**Q：打开网页 502？**  
-- 确认暴露端口是 **8080**  
-- 等构建完全结束再访问
-
-**Q：要绑信用卡吗？**  
-- Free 档一般 **不需要**
-
-**Q：会收钱吗？**  
-- 不升级套餐、不租专用服务器 = **0 元**  
-- 只有升级 Dev（约 $5/月）等才会扣费
-
-**Q：数据会丢吗？**  
-- 免费容器重建后演示数据可能重置；重新部署会自动 `db:sync` 灌演示账号
-
----
-
-# 流程一览
+## 30 秒决策
 
 ```
-GitHub 建仓库 → Mac 上 git push
-       ↓
-Zeabur 登录 → 导入仓库 → 端口 8080
-       ↓
-绑定 xxx.zeabur.app → 浏览器测试
-       ↓
-钉钉填首页 + 可信域名（一次）
+在大陆、Zeabur 报错或找不到入口？
+  → 用方案 A（Docker + cpolar）或方案 B（pilot + localtunnel）
+
+要固定网址、电脑可关？
+  → 用方案 C（Oracle 傻瓜部署）
+
+坚持用 Zeabur？
+  → 区域选香港 + 完成实名 + 在项目里 Add Service
 ```
-
----
-
-# 不想用 GitHub？
-
-可改用本机 Docker + 临时隧道（见 [14-更方便部署.md](./14-更方便部署.md)）：
-
-```bash
-npm run docker
-npx localtunnel --port 8080 --local-host 127.0.0.1
-```
-
-但链接会变，不适合长期钉在钉钉工作台。

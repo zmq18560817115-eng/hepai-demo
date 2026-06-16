@@ -1,0 +1,18 @@
+{
+  "name": "enterprise-management-guidelines",
+  "display_name": "企业管理准则（制度与流程知识库）",
+  "version": "2025.05",
+  "effective_date": "2025-01-01",
+  "owner": "集团人力资源部",
+  "description": "和拍 AI HR 的制度依据：入职、考勤休假、薪酬报销、绩效发展、信息安全、带教融入等企业管理准则与办事流程。",
+  "categories": [
+    { "id": "onboarding", "title": "入职与试用期", "file": "policies/01-onboarding-probation.md" },
+    { "id": "attendance", "title": "考勤与休假", "file": "policies/02-attendance-leave.md" },
+    { "id": "compensation", "title": "薪酬与报销", "file": "policies/03-compensation-expense.md" },
+    { "id": "performance", "title": "绩效与发展", "file": "policies/04-performance-development.md" },
+    { "id": "security", "title": "信息安全与保密", "file": "policies/05-info-security.md" },
+    { "id": "mentoring", "title": "带教与新人融入", "file": "policies/06-mentoring-integration.md" }
+  ],
+  "integrated_with": ["ai-hr-onboarding"],
+  "answer_policy": "制度类问题必须优先引用本知识库条款；无法命中时明确说明并建议联系 HRBP 或钉钉「人事服务」工单。"
+}

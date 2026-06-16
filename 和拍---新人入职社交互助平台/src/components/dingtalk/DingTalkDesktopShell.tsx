@@ -33,6 +33,7 @@ import {
   resetPluginFirstRun,
 } from '../../utils/firstRunStorage';
 import OnboardingPluginIntro from './OnboardingPluginIntro';
+import EntryRoleSelectView from '../EntryRoleSelectView';
 import type { UserType } from '../../types';
 
 type ShellNavId =
@@ -219,7 +220,12 @@ type DingTalkDesktopShellProps = {
 export default function DingTalkDesktopShell({
   children,
 }: DingTalkDesktopShellProps) {
-  const [activeNav, setActiveNav] = useState<ShellNavId>('messages');
+  const [activeNav, setActiveNav] = useState<ShellNavId>(() => {
+    if (import.meta.env.VITE_USE_MOCK_API === 'true') return 'onboarding';
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('start') === 'onboarding') return 'onboarding';
+    return 'messages';
+  });
   const [firstRunDone, setFirstRunDone] = useState(hasCompletedPluginFirstRun);
   const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>(
     'role_select',
@@ -265,64 +271,17 @@ export default function DingTalkDesktopShell({
     if (isOnboarding) {
       if (onboardingStep === 'role_select') {
         return (
-          <div className="h-full flex flex-col items-center justify-center overflow-y-auto bg-[#f5f6f8] px-6 py-8">
-            <div className="w-full max-w-3xl">
-              <div className="text-center mb-6">
-                <div className="mx-auto w-11 h-11 rounded-xl bg-white border border-[#dde1e6] flex items-center justify-center text-[#ff5e4d] text-lg font-bold shadow-sm">
-                  和
-                </div>
-                <p className="text-[13px] text-[#8f959e] mt-2">
-                  选择你的身份进入对应模块
-                </p>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <RoleCard
-                  layout="column"
-                  title="我是新人"
-                  subtitle="入职社交互助"
-                  bg="bg-white"
-                  iconBg="bg-[#1677ff] text-white"
-                  icon={<UserRound size={18} strokeWidth={2.25} />}
-                  border="border-[#dde1e6]"
-                  shadow=""
-                  onClick={() => {
-                    setEntryRole('newcomer');
-                    if (!firstRunDone) setOnboardingStep('intro');
-                    else setOnboardingStep('plugin');
-                  }}
-                />
-                <RoleCard
-                  layout="column"
-                  title="我是导师"
-                  subtitle="带教管理工作台"
-                  bg="bg-white"
-                  iconBg="bg-[#1677ff] text-white"
-                  icon={<Users size={18} strokeWidth={2.25} />}
-                  border="border-[#dde1e6]"
-                  shadow=""
-                  onClick={() => {
-                    setEntryRole('mentor');
-                    setOnboardingStep('plugin');
-                  }}
-                />
-                <RoleCard
-                  layout="column"
-                  title="我是 HR"
-                  subtitle="数智运营看板"
-                  bg="bg-white"
-                  iconBg="bg-[#1677ff] text-white"
-                  icon={<BarChart3 size={18} strokeWidth={2.25} />}
-                  border="border-[#dde1e6]"
-                  shadow=""
-                  onClick={() => {
-                    setEntryRole('hr');
-                    setOnboardingStep('plugin');
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          <EntryRoleSelectView
+            embedded
+            onSelect={(role) => {
+              setEntryRole(role);
+              if (role === 'newcomer' && !firstRunDone) {
+                setOnboardingStep('intro');
+              } else {
+                setOnboardingStep('plugin');
+              }
+            }}
+          />
         );
       }
 

@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+design-exports/
+design-exports-mobile/
+hepai-design-exports.zip

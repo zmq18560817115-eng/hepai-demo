@@ -105,54 +105,6 @@ export default function BlindBoxView({ onComplete }: BlindBoxViewProps) {
 
  const revealed = revealedPersona ?? persona;
 
- if (onboardingDone && !retakeMode) {
- return (
- <div className="max-w-md mx-auto py-12 text-center space-y-6">
- <div className="w-16 h-16 mx-auto bg-emerald-100 rounded-xl border border-outline-variant/40 flex items-center justify-center">
- <Gift size={32} className="text-emerald-700" />
- </div>
-        <h2 className="ding-title text-xl text-slate-900">你已完成入职人格测试</h2>
-        <p className="text-sm text-slate-600 leading-relaxed">
-          重新答题将<strong className="font-medium text-slate-800">保留姓名与人格面具</strong>，仅根据最新 8 题倾向刷新<strong className="font-medium text-slate-800">社交标签</strong>。
-        </p>
- <button
- type="button"
- onClick={async () => {
- await resetOnboarding();
- setRetakeMode(true);
- setStep(0);
- setAnswers([]);
- setIsRevealing(false);
- setRevealedPersona(null);
- setRevealedEmployee(null);
- }}
- className="neo-button-primary w-full py-3 font-medium"
- >
- 重新做人格测试（8 题）
- </button>
- <button
- type="button"
- onClick={() => void onComplete()}
- className="neo-button w-full py-3 text-sm"
- >
- 进入安全屋
- </button>
- </div>
- );
- }
-
- if (loadError && questions.length === 0) {
- return (
- <p className="text-center text-rose-600 text-sm py-8 font-sans">{loadError}</p>
- );
- }
-
- if (questions.length === 0) {
- return (
- <p className="text-center text-slate-500 text-sm py-8 font-sans">加载题目中…</p>
- );
- }
-
  if (isRevealing && revealed) {
  return (
  <div className="flex flex-col items-center justify-center py-8 text-center px-2">
@@ -211,6 +163,54 @@ export default function BlindBoxView({ onComplete }: BlindBoxViewProps) {
  />
  </motion.button>
  </div>
+ );
+ }
+
+ if (onboardingDone && !retakeMode) {
+ return (
+ <div className="max-w-md mx-auto py-12 text-center space-y-6">
+ <div className="w-16 h-16 mx-auto bg-emerald-100 rounded-xl border border-outline-variant/40 flex items-center justify-center">
+ <Gift size={32} className="text-emerald-700" />
+ </div>
+        <h2 className="ding-title text-xl text-slate-900">你已完成入职人格测试</h2>
+        <p className="text-sm text-slate-600 leading-relaxed">
+          重新答题将<strong className="font-medium text-slate-800">保留姓名与人格面具</strong>，仅根据最新 8 题倾向刷新<strong className="font-medium text-slate-800">社交标签</strong>。
+        </p>
+ <button
+ type="button"
+ onClick={async () => {
+ await resetOnboarding();
+ setRetakeMode(true);
+ setStep(0);
+ setAnswers([]);
+ setIsRevealing(false);
+ setRevealedPersona(null);
+ setRevealedEmployee(null);
+ }}
+ className="neo-button-primary w-full py-3 font-medium"
+ >
+ 重新做人格测试（8 题）
+ </button>
+ <button
+ type="button"
+ onClick={() => void onComplete()}
+ className="neo-button w-full py-3 text-sm"
+ >
+ 进入安全屋
+ </button>
+ </div>
+ );
+ }
+
+ if (loadError && questions.length === 0) {
+ return (
+ <p className="text-center text-rose-600 text-sm py-8 font-sans">{loadError}</p>
+ );
+ }
+
+ if (questions.length === 0) {
+ return (
+ <p className="text-center text-slate-500 text-sm py-8 font-sans">加载题目中…</p>
  );
  }
 

@@ -33,7 +33,11 @@ export function isDingTalkUserAgent(): boolean {
 }
 
 export function isDingTalkEmbedMode(): boolean {
-  return import.meta.env.VITE_DINGTALK_EMBED === 'true';
+  if (import.meta.env.VITE_DINGTALK_EMBED === 'true') return true;
+  if (typeof window !== 'undefined') {
+    return new URLSearchParams(window.location.search).get('embed') === '1';
+  }
+  return false;
 }
 
 function loadDingTalkScript(): Promise<void> {
